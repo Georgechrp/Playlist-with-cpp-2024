@@ -41,6 +41,41 @@ public:
         }
     }
 
+    void addNode(const T& data, int position) {
+        ChainNode<T>* newNode = new ChainNode<T>(data);
+        if (head == nullptr) {
+            head = newNode;
+            tmp = head;
+        }
+        else {
+            // Ειδική περίπτωση για την πρώτη θέση
+            if (position == 0) {
+                newNode->next = head;
+                head->prev = newNode;
+                head = newNode;
+            }
+            else {
+                ChainNode<T>* current = head;
+                int currentPosition = 0;
+                while (current != nullptr && currentPosition < position - 1) {
+                    current = current->next;
+                    currentPosition++;
+                }
+                if (current == nullptr) {
+                    std::cerr << "Invalid position. Node was not added." << std::endl;
+                    delete newNode;
+                    return;
+                }
+                newNode->next = current->next;
+                if (current->next != nullptr) {
+                    current->next->prev = newNode;
+                }
+                current->next = newNode;
+                newNode->prev = current;
+            }
+        }
+    }
+
     // Εκτύπωση της αλυσίδας
     void print() const {
         ChainNode<T>* current = head;
@@ -101,6 +136,11 @@ public:
         songs.addNode(song);
     }
 
+    // Προσθήκη τραγουδιού στη λίστα αναπαραγωγής
+    void addSong(const Song& song, int pos) {
+        songs.addNode(song, pos);
+    }
+
     // Εκτύπωση της λίστας αναπαραγωγής
     void printSongs() const {
         std::cout << name << ": " << std::endl;
@@ -110,26 +150,26 @@ public:
             current = current->next;
         }
     }
+
     // Αναπαραγωγη επόμενου τραγουδιού
     void playNextSong(ChainNode<Song>** current) const {
         if (*current != nullptr && (*current)->next != nullptr) {
             *current = (*current)->next;
-            std::cout << "Next song: " << (*current)->data.getTitle() << std::endl;
+            std::cout << "\nThe Next song: " << (*current)->data.getTitle();
         }
         else {
-            std::cout << "No next song in the playlist." << std::endl;
+            std::cout << "\nNo next song in the playlist.";
         }
     }
     void playPrevSong(ChainNode<Song>** current) const {
         if (*current != nullptr && (*current)->prev != nullptr) {
             *current = (*current)->prev;
-            std::cout << "Previous song: " << (*current)->data.getTitle() << std::endl;
+            std::cout << "\nThe Previous song: " << (*current)->data.getTitle();
         }
         else {
-            std::cout << "No previous song in the playlist." << std::endl;
+            std::cout << "\nNo previous song in the playlist.";
         }
     }
-
 
     void playShuffled() const {
         // Δημιουργούμε έναν πίνακα που θα περιέχει τους δείκτες σε κάθε τραγούδι της λίστας
@@ -159,7 +199,7 @@ void insertSong(Playlist& myPlaylist) {
     std::string artistName;
     std::string artistSurname;
     std::string albumTitle;
-    int likes;
+    int likes, pos;
     std::cout << "\nEnter title of song: ";
     std::cin >> title;
     std::cout << "\nEnter name of singer: ";
@@ -170,8 +210,10 @@ void insertSong(Playlist& myPlaylist) {
     std::cin >> albumTitle;
     std::cout << "\nEnter number of likes: ";
     std::cin >> likes;
+    std::cout << "\nEnter position in playlist: ";
+    std::cin >> pos;
     Song song1(title, artistName, artistSurname, albumTitle, likes);
-    myPlaylist.addSong(song1);
+    myPlaylist.addSong(song1, pos-1);
     std::cout << "Song added successfully" << std::endl;
 }
 
@@ -202,17 +244,20 @@ int main() {
 
     int choice, choiceForSort;
     do {
-        std::cout << "\nPlaying song \"" << current->data.getTitle() << "\" from the album \"" << current->data.getAlbumTitle() << "\" with the singer \"" << current->data.getArtistName() + " " + current->data.getArtistSurname() << "\" (" << current->data.getLikes() << "users like this song)";
-        std::cout << "\n\nMenu:" << std::endl;
-        std::cout << "1. Insert new song into playlist" << std::endl;
-        std::cout << "2. Play next song in playlist" << std::endl;
-        std::cout << "3. Play previous song in playlist" << std::endl;
-        std::cout << "4. Play all songs in playlist in random order" << std::endl;
-        std::cout << "5. Move song to another position in playlist" << std::endl;
-        std::cout << "6. Sort playlist" << std::endl;
-        std::cout << "7. Print playlist to screen" << std::endl;
-        std::cout << "8. Exit" << std::endl;
-        std::cout << "Enter your choice: \n";
+        std::cout << "_______________________________________________________________________________________________________________\n";
+        std::cout << "\nPlaying song \"" << current->data.getTitle() << "\" from the album \"" << current->data.getAlbumTitle() << "\" with the singer \"" << current->data.getArtistName() + " " + current->data.getArtistSurname() << "\" (" << current->data.getLikes() << " users like this song)";
+        std::cout << "\n--------------------------------------------------------------------------------------------------------------\n";
+        std::cout << "\n\n - - - - - - - - - - Menu - - - - - - - - - - -" << std::endl;
+        std::cout << " | 1. Insert new song into playlist             |" << std::endl;
+        std::cout << " | 2. Play next song in playlist                |" << std::endl;
+        std::cout << " | 3. Play previous song in playlist            |" << std::endl;
+        std::cout << " | 4. Play all songs in playlist in random order|" << std::endl;
+        std::cout << " | 5. Move song to another position in playlist |" << std::endl;
+        std::cout << " | 6. Sort playlist                             |" << std::endl;
+        std::cout << " | 7. Print playlist to screen                  |" << std::endl;
+        std::cout << " | 8. Exit                                      |" << std::endl;
+        std::cout << " - - - - - - - - - - - - - - - - - - - - - - - -\n";
+        std::cout << "Enter your choice: ";
         std::cin >> choice;
 
 
