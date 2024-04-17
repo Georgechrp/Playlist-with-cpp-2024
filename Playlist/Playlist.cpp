@@ -1,11 +1,9 @@
 ﻿#include <iostream>
 #include <string>
-//Για την τυχαία αναπαραγωγή
 #include <vector>
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
-
 
 // Ορισμός του κόμβου αλυσίδας
 template <typename T>
@@ -155,22 +153,23 @@ public:
     void playNextSong(ChainNode<Song>** current) const {
         if (*current != nullptr && (*current)->next != nullptr) {
             *current = (*current)->next;
-            std::cout << "\nThe Next song: " << (*current)->data.getTitle();
+            std::cout << "\nThe Next song: " << (*current)->data.getTitle() << std::endl;
         }
         else {
-            std::cout << "\nNo next song in the playlist.";
+            std::cout << "\nNo next song in the playlist." << std::endl;
         }
     }
     void playPrevSong(ChainNode<Song>** current) const {
         if (*current != nullptr && (*current)->prev != nullptr) {
             *current = (*current)->prev;
-            std::cout << "\nThe Previous song: " << (*current)->data.getTitle();
+            std::cout << "\nThe Previous song: " << (*current)->data.getTitle() << std::endl;
         }
         else {
-            std::cout << "\nNo previous song in the playlist.";
+            std::cout << "\nNo previous song in the playlist." << std::endl;
         }
     }
 
+    //doesnt work
     void playShuffled() const {
         // Δημιουργούμε έναν πίνακα που θα περιέχει τους δείκτες σε κάθε τραγούδι της λίστας
         std::vector<const ChainNode<Song>*> songPointers;
@@ -237,17 +236,16 @@ void initializeThePlaylist(Playlist& myPlaylist) {
 int main() {
     Playlist myPlaylist("The Best Playlist ever");
     initializeThePlaylist(myPlaylist);
-
-
-    myPlaylist.printSongs();
     ChainNode<Song>* current = myPlaylist.findHead();
+
+    std::cout << "";
 
     int choice, choiceForSort;
     do {
         std::cout << "_______________________________________________________________________________________________________________\n";
-        std::cout << "\nPlaying song \"" << current->data.getTitle() << "\" from the album \"" << current->data.getAlbumTitle() << "\" with the singer \"" << current->data.getArtistName() + " " + current->data.getArtistSurname() << "\" (" << current->data.getLikes() << " users like this song)";
-        std::cout << "\n--------------------------------------------------------------------------------------------------------------\n";
-        std::cout << "\n\n - - - - - - - - - - Menu - - - - - - - - - - -" << std::endl;
+        std::cout << "\n  Playing song \"" << current->data.getTitle() << "\" from the album \"" << current->data.getAlbumTitle() << "\" with the singer \"" << current->data.getArtistName() + " " + current->data.getArtistSurname() << "\" (" << current->data.getLikes() << " users like this song)";
+        std::cout << "\n_______________________________________________________________________________________________________________\n";
+        std::cout << "\n - - - - - - - - - - Menu - - - - - - - - - - - -" << std::endl;
         std::cout << " | 1. Insert new song into playlist             |" << std::endl;
         std::cout << " | 2. Play next song in playlist                |" << std::endl;
         std::cout << " | 3. Play previous song in playlist            |" << std::endl;
@@ -260,20 +258,15 @@ int main() {
         std::cout << "Enter your choice: ";
         std::cin >> choice;
 
-
         switch (choice) {
         case 1:
             insertSong(myPlaylist);
             break;
         case 2:
-        { //ChainNode<Song>* current = nullptr;
-            myPlaylist.playNextSong(&current);
-            std::cout << " " << std::endl;
+            myPlaylist.playNextSong(&current);//ChainNode<Song>* current = nullptr;
             break;
-        }
         case 3:
             myPlaylist.playPrevSong(&current);
-            std::cout << " " << std::endl;
             break;
         case 4:
             //myPlaylist.playShuffled();
@@ -307,18 +300,15 @@ int main() {
             case 5:
                 break;
             }
-            //sortPlaylist(playlist);
-            std::cout << " " << std::endl;
             break;
         case 7:
             myPlaylist.printSongs();
             break;
         case 8:
-            //cout << "Exiting..." << endl;
-            std::cout << " " << std::endl;
+            std::cout << "Exiting..." << std::endl;
             break;
-            //default:
-            //    // cout << "Invalid choice. Please enter a number between 1 and 8." << endl;
+        default:
+            std::cout << "Invalid choice. Please enter a number between 1 and 8." << std::endl;
         }
     } while (choice != 8);
 
