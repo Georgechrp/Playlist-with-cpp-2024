@@ -92,7 +92,6 @@ public:
 
 };
 
-
 // Ορισμός της κλάσης Song
 class Song {
 private:
@@ -116,13 +115,11 @@ public:
 
 };
 
-
 // Ορισμός της κλάσης Playlist
 class Playlist {
 private:
     std::string name;
     Chain<Song> songs; // Η διπλά συνδεδεμένη λίστα τραγουδιών
-
 public:
     Playlist(const std::string& name) : name(name) {}
     ChainNode<Song>* findHead() const {
@@ -141,10 +138,12 @@ public:
 
     // Εκτύπωση της λίστας αναπαραγωγής
     void printSongs() const {
+        int songCount = 1;
         std::cout << name << ": " << std::endl;
         ChainNode<Song>* current = songs.getHead();
         while (current != nullptr) {
-            std::cout << "Title: " << current->data.getTitle() << ", Artist: " << current->data.getArtistName() << " " << current->data.getArtistSurname() << ", Album: " << current->data.getAlbumTitle() << ", Likes: " << current->data.getLikes() << std::endl;
+            std::cout << songCount++;
+            std::cout << ".Title: " << current->data.getTitle() << ", Artist: " << current->data.getArtistName() << " " << current->data.getArtistSurname() << ", Album: " << current->data.getAlbumTitle() << ", Likes: " << current->data.getLikes() << std::endl;
             current = current->next;
         }
     }
@@ -166,26 +165,6 @@ public:
         }
         else {
             std::cout << "\nNo previous song in the playlist." << std::endl;
-        }
-    }
-
-    //doesnt work
-    void playShuffled() const {
-        // Δημιουργούμε έναν πίνακα που θα περιέχει τους δείκτες σε κάθε τραγούδι της λίστας
-        std::vector<const ChainNode<Song>*> songPointers;
-        ChainNode<Song>* current = songs.getHead();
-        while (current != nullptr) {
-            songPointers.push_back(current);
-            current = current->next;
-        }
-
-        // Ανακατεύουμε τους δείκτες στον πίνακα
-        std::srand(std::time(0));
-        std::random_shuffle(songPointers.begin(), songPointers.end());
-
-        // Αναπαράγουμε τα τραγούδια σύμφωνα με τη σειρά τους στον ανακατεμένο πίνακα
-        for (const auto& songPtr : songPointers) {
-            std::cout << "Playing song \"" << songPtr->data.getTitle() << "\" from the album \"" << songPtr->data.getAlbumTitle() << "\" with singer \"" << songPtr->data.getArtistName() << " " << songPtr->data.getArtistSurname() << "\" (" << songPtr->data.getLikes() << " users like this song)" << std::endl;
         }
     }
 
