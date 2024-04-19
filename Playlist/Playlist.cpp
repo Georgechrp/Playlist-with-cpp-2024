@@ -168,6 +168,52 @@ public:
         }
     }
 
+    // Μέθοδος για τον υπολογισμό του μήκους της λίστας
+    int getLength() const {
+        int length = 0;
+        ChainNode<Song>* current = findHead();
+        while (current != nullptr) {
+            ++length;
+            current = current->next;
+        }
+        return length;
+    }
+
+    // Μέθοδος για ταξινόμηση των τραγουδιών κατά τίτλο
+    void sortSongsByTitle(Playlist myplaylist) {
+        
+        if (myplaylist.findHead() == nullptr || myplaylist.findHead()->next == nullptr) {
+            // Η λίστα είναι ήδη ταξινομημένη ή περιέχει μόνο ένα στοιχείο
+            return;
+        }
+
+        bool swapped;
+        ChainNode<Song>* ptr1;
+        ChainNode<Song>* lptr = nullptr;
+        do {
+            swapped = false;
+            ptr1 = myplaylist.findHead();
+
+            while (ptr1->next != lptr) {
+                if (ptr1->data.getTitle() > ptr1->next->data.getTitle()) {
+                    swap(ptr1, ptr1->next);
+                    swapped = true;
+                }
+                ptr1 = ptr1->next;
+            }
+            lptr = ptr1;
+            std::cout << "_________Here ________\n";
+        } while (swapped);
+    }
+
+    // Βοηθητική μέθοδος για ανταλλαγή δεικτών
+    void swap(ChainNode<Song>* a, ChainNode<Song>* b) {
+        Song temp = a->data;
+        a->data = b->data;
+        b->data = temp;
+    }
+
+  
 };
 
 //Ορισμός της κλάσης insertSong
@@ -216,7 +262,6 @@ int main() {
     Playlist myPlaylist("The Best Playlist ever");
     initializeThePlaylist(myPlaylist);
     ChainNode<Song>* current = myPlaylist.findHead();
-
     std::cout << "";
 
     int choice, choiceForSort;
@@ -248,12 +293,10 @@ int main() {
             myPlaylist.playPrevSong(&current);
             break;
         case 4:
-            //myPlaylist.playShuffled();
-            std::cout << " " << std::endl;
+           // myPlaylist.playShuffled(&current);
             break;
         case 5:
             //moveSong(playlist);
-            std::cout << " " << std::endl;
             break;
         case 6:
             std::cout << "\nMenu for Sorting:" << std::endl;
@@ -263,9 +306,10 @@ int main() {
             std::cout << "4. Sort playlist by number of likes (decreasing)" << std::endl;
             std::cout << "5. Cancel sorting" << std::endl;
             std::cin >> choiceForSort;
-            switch (choice) {
+            switch (choiceForSort) {
             case 1:
                 std::cout << "Sort playlist by song title" << std::endl;
+                myPlaylist.sortSongsByTitle(myPlaylist);
                 break;
             case 2:
                 std::cout << "2. Sort playlist by singer’s first name" << std::endl;
