@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <random>
 
 // Ορισμός του κόμβου αλυσίδας
 template <typename T>
@@ -213,7 +214,46 @@ public:
         b->data = temp;
     }
 
+    //Επιστρέφει το τραγούδι που βρίσκεται στην θέση pos
+    ChainNode<Song>* findSongWithPosition(int pos) {
+        int songCount = 1;
+        ChainNode<Song>* current = songs.getHead();
+        while (current != nullptr && songCount != pos) {
+            songCount++;
+            current = current->next;
+        } 
+        
+        return current;
+    }
+
+    void moveSongs(int pos1, int pos2) {
+        ChainNode<Song>* node1 = findSongWithPosition(pos1);
+        ChainNode<Song>* node2 = findSongWithPosition(pos2);
+        swap(node1, node2);
+        //swap(findSongWithPosition(pos1), findSongWithPosition(pos2));
+    }
   
+    int giveRandomNumber() {
+        int lowerBound = 1; // Κάτω όριο
+        int upperBound = getLength(); // Άνω όριο
+
+        // Δημιουργία ενός γεννήτριας τυχαίων αριθμών
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dist(lowerBound, upperBound);
+
+        // Δημιουργία τυχαίου αριθμού μεταξύ lowerBound και upperBound
+        int randomNumber = dist(gen);
+
+        return randomNumber;
+    }
+    //Ανακατευουμε
+    void Suffle() {
+        for (int i = 0; i < getLength() + 10; i++) {
+            swap(findSongWithPosition(giveRandomNumber()), findSongWithPosition(giveRandomNumber()));
+        }
+        std::cout << "random order successful! Press '7' to see the order\n";
+    }
 };
 
 //Ορισμός της κλάσης insertSong
@@ -237,9 +277,10 @@ void insertSong(Playlist& myPlaylist) {
     std::cout << "\nEnter position in playlist: ";
     std::cin >> pos;
     Song song1(title, artistName, artistSurname, albumTitle, likes);
-    myPlaylist.addSong(song1, pos-1);
+    myPlaylist.addSong(song1, pos - 1);
     std::cout << "Song added successfully" << std::endl;
 }
+
 
 void initializeThePlaylist(Playlist& myPlaylist) {
     Song song1("Balada", "Foivos", "Delivorias", "ANIME", 1946);
@@ -262,9 +303,9 @@ int main() {
     Playlist myPlaylist("The Best Playlist ever");
     initializeThePlaylist(myPlaylist);
     ChainNode<Song>* current = myPlaylist.findHead();
-    std::cout << "";
 
-    int choice, choiceForSort;
+    
+    int choice, choiceForSort, pos1, pos2;
     do {
         std::cout << "_______________________________________________________________________________________________________________\n";
         std::cout << "\n  Playing song \"" << current->data.getTitle() << "\" from the album \"" << current->data.getAlbumTitle() << "\" with the singer \"" << current->data.getArtistName() + " " + current->data.getArtistSurname() << "\" (" << current->data.getLikes() << " users like this song)";
@@ -293,10 +334,14 @@ int main() {
             myPlaylist.playPrevSong(&current);
             break;
         case 4:
-           // myPlaylist.playShuffled(&current);
+            myPlaylist.Suffle();
             break;
         case 5:
-            //moveSong(playlist);
+            std::cout << "Enter position of song in playlist to move: ";
+            std::cin >> pos1;
+            std::cout << "\nEnter new position of song in playlist : ";
+            std::cin >> pos2;
+            myPlaylist.moveSongs(pos1, pos2);
             break;
         case 6:
             std::cout << "\nMenu for Sorting:" << std::endl;
