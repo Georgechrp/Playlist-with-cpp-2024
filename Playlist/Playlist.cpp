@@ -203,9 +203,87 @@ public:
                 ptr1 = ptr1->next;
             }
             lptr = ptr1;
-            std::cout << "_________Here ________\n";
         } while (swapped);
     }
+
+    // Μέθοδος για ταξινόμηση των τραγουδιών κατά όνομα 
+    void sortSongsByFirstName(Playlist myplaylist) {
+
+        if (myplaylist.findHead() == nullptr || myplaylist.findHead()->next == nullptr) {
+            // Η λίστα είναι ήδη ταξινομημένη ή περιέχει μόνο ένα στοιχείο
+            return;
+        }
+
+        bool swapped;
+        ChainNode<Song>* ptr1;
+        ChainNode<Song>* lptr = nullptr;
+        do {
+            swapped = false;
+            ptr1 = myplaylist.findHead();
+
+            while (ptr1->next != lptr) {
+                if (ptr1->data.getArtistName() > ptr1->next->data.getArtistName()) {
+                    swap(ptr1, ptr1->next);
+                    swapped = true;
+                }
+                ptr1 = ptr1->next;
+            }
+            lptr = ptr1;
+        } while (swapped);
+    }
+
+    // Μέθοδος για ταξινόμηση των τραγουδιών με επίθετο 
+    void sortSongsByLastName(Playlist myplaylist) {
+
+        if (myplaylist.findHead() == nullptr || myplaylist.findHead()->next == nullptr) {
+            // Η λίστα είναι ήδη ταξινομημένη ή περιέχει μόνο ένα στοιχείο
+            return;
+        }
+
+        bool swapped;
+        ChainNode<Song>* ptr1;
+        ChainNode<Song>* lptr = nullptr;
+        do {
+            swapped = false;
+            ptr1 = myplaylist.findHead();
+
+            while (ptr1->next != lptr) {
+                if (ptr1->data.getArtistSurname() > ptr1->next->data.getArtistSurname()) {
+                    swap(ptr1, ptr1->next);
+                    swapped = true;
+                }
+                ptr1 = ptr1->next;
+            }
+            lptr = ptr1;
+        } while (swapped);
+    }
+
+    // Μέθοδος για ταξινόμηση των τραγουδιών με likes 
+    void sortSongsByLikes(Playlist myplaylist) {
+
+        if (myplaylist.findHead() == nullptr || myplaylist.findHead()->next == nullptr) {
+            // Η λίστα είναι ήδη ταξινομημένη ή περιέχει μόνο ένα στοιχείο
+            return;
+        }
+
+        bool swapped;
+        ChainNode<Song>* ptr1;
+        ChainNode<Song>* lptr = nullptr;
+        do {
+            swapped = false;
+            ptr1 = myplaylist.findHead();
+
+            while (ptr1->next != lptr) {
+                if (ptr1->data.getLikes() < ptr1->next->data.getLikes()) {
+                    swap(ptr1, ptr1->next);
+                    swapped = true;
+                }
+                ptr1 = ptr1->next;
+            }
+            lptr = ptr1;
+        } while (swapped);
+    }
+
 
     // Βοηθητική μέθοδος για ανταλλαγή δεικτών
     void swap(ChainNode<Song>* a, ChainNode<Song>* b) {
@@ -304,7 +382,7 @@ int main() {
     initializeThePlaylist(myPlaylist);
     ChainNode<Song>* current = myPlaylist.findHead();
 
-    
+    bool flag;
     int choice, choiceForSort, pos1, pos2;
     do {
         std::cout << "_______________________________________________________________________________________________________________\n";
@@ -337,11 +415,24 @@ int main() {
             myPlaylist.Suffle();
             break;
         case 5:
-            std::cout << "Enter position of song in playlist to move: ";
-            std::cin >> pos1;
-            std::cout << "\nEnter new position of song in playlist : ";
-            std::cin >> pos2;
+            do {
+                flag = true;
+                std::cout << "Enter position of song in playlist to move: ";
+                std::cin >> pos1;
+                std::cout << "\nEnter new position of song in playlist : ";
+                std::cin >> pos2;
+                if (pos1<1 || pos1>myPlaylist.getLength()) {
+                    std::cout << "\nPlease enter a number bewteen 1 and " << myPlaylist.getLength();
+                    flag = false;
+                }
+                if (pos2<1 || pos2>myPlaylist.getLength()) {
+                    std::cout << "\nPlease enter a number bewteen 1 and " << myPlaylist.getLength() << "\n";
+                    flag = false;
+                }
+                
+            } while (!flag);
             myPlaylist.moveSongs(pos1, pos2);
+            std::cout << "\n - - The songs in order " << pos1 << " and " << pos2 << " reversed  - - \n";
             break;
         case 6:
             std::cout << "\nMenu for Sorting:" << std::endl;
@@ -353,21 +444,25 @@ int main() {
             std::cin >> choiceForSort;
             switch (choiceForSort) {
             case 1:
-                std::cout << "Sort playlist by song title" << std::endl;
                 myPlaylist.sortSongsByTitle(myPlaylist);
+                std::cout << "[Playlist sorted by song title]" << std::endl;
                 break;
             case 2:
-                std::cout << "2. Sort playlist by singer’s first name" << std::endl;
+                myPlaylist.sortSongsByFirstName(myPlaylist);
+                std::cout << "[Playlist sorted by First Name]" << std::endl;
                 break;
             case 3:
-                std::cout << "3. Sort playlist by singer’s last name" << std::endl;
+                myPlaylist.sortSongsByLastName(myPlaylist);
+                std::cout << "[Playlist sorted by Last Name]" << std::endl;
                 break;
             case 4:
-                std::cout << "4. Sort playlist by number of likes (decreasing)" << std::endl;
+                myPlaylist.sortSongsByLikes(myPlaylist);
+                std::cout << "[Playlist sorted by Likes(decreasing)]" << std::endl;
                 break;
             case 5:
                 break;
             }
+            std::cout << "[Press '7' to see the sorted playlist]" << std::endl;
             break;
         case 7:
             myPlaylist.printSongs();
